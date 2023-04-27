@@ -1,0 +1,317 @@
+  [1m[35m (724.1ms)[0m  [1m[35mCREATE DATABASE "Budge_app_dev" ENCODING = 'unicode'[0m
+  [1m[35m (6.2ms)[0m  [1m[35mCREATE DATABASE "Budge_app_dev" ENCODING = 'unicode'[0m
+  [1m[35m (27.6ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (22.3ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.7ms)[0m  [1m[34mSELECT pg_try_advisory_lock(4612965187933231080)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (1.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateUsers (20230424165503)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (24.5ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "name" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (2.7ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20230424165503"]]
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreatePayments (20230424165617)
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (21.1ms)[0m  [1m[35mCREATE TABLE "payments" ("id" bigserial primary key, "name" character varying, "amount" integer DEFAULT 0, "user_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_081dc04a02"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+)[0m
+  [1m[35m (11.4ms)[0m  [1m[35mCREATE INDEX "index_payments_on_user_id" ON "payments" ("user_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.8ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20230424165617"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateGroups (20230424165748)
+  [1m[36mTRANSACTION (2.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (16.5ms)[0m  [1m[35mCREATE TABLE "groups" ("id" bigserial primary key, "name" character varying, "icon" character varying, "user_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_5e78cd340a"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+)[0m
+  [1m[35m (4.4ms)[0m  [1m[35mCREATE INDEX "index_groups_on_user_id" ON "groups" ("user_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20230424165748"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddDeviseToUsers (20230425115553)
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (2.2ms)[0m  [1m[35mALTER TABLE "users" ADD "email" character varying DEFAULT '' NOT NULL[0m
+  [1m[35m (0.9ms)[0m  [1m[35mALTER TABLE "users" ADD "encrypted_password" character varying DEFAULT '' NOT NULL[0m
+  [1m[35m (0.7ms)[0m  [1m[35mALTER TABLE "users" ADD "reset_password_token" character varying[0m
+  [1m[35m (0.7ms)[0m  [1m[35mALTER TABLE "users" ADD "reset_password_sent_at" timestamp(6)[0m
+  [1m[35m (1.1ms)[0m  [1m[35mALTER TABLE "users" ADD "remember_created_at" timestamp(6)[0m
+  [1m[35m (1.4ms)[0m  [1m[35mALTER TABLE "users" ADD "confirmation_token" character varying[0m
+  [1m[35m (0.6ms)[0m  [1m[35mALTER TABLE "users" ADD "confirmed_at" timestamp(6)[0m
+  [1m[35m (0.6ms)[0m  [1m[35mALTER TABLE "users" ADD "confirmation_sent_at" timestamp(6)[0m
+  [1m[35m (0.5ms)[0m  [1m[35mALTER TABLE "users" ADD "unconfirmed_email" character varying[0m
+  [1m[35m (6.7ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")[0m
+  [1m[35m (5.5ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_reset_password_token" ON "users" ("reset_password_token")[0m
+  [1m[35m (10.5ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_confirmation_token" ON "users" ("confirmation_token")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20230425115553"]]
+  [1m[36mTRANSACTION (3.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateGroupPaymentJoinTable (20230425185050)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (2.1ms)[0m  [1m[35mCREATE TABLE "groups_payments" ("group_id" bigint NOT NULL, "payment_id" bigint NOT NULL)[0m
+  [1m[35m (6.4ms)[0m  [1m[35mCREATE INDEX "index_groups_payments_on_group_id_and_payment_id" ON "groups_payments" ("group_id", "payment_id")[0m
+  [1m[35m (4.7ms)[0m  [1m[35mCREATE INDEX "index_groups_payments_on_payment_id_and_group_id" ON "groups_payments" ("payment_id", "group_id")[0m
+  [1m[35m (10.2ms)[0m  [1m[35mALTER TABLE "groups_payments" ADD CONSTRAINT "fk_rails_4db0933125"
+FOREIGN KEY ("group_id")
+  REFERENCES "groups" ("id")
+[0m
+  [1m[35m (3.7ms)[0m  [1m[35mALTER TABLE "groups_payments" ADD CONSTRAINT "fk_rails_e59f457a3e"
+FOREIGN KEY ("payment_id")
+  REFERENCES "payments" ("id")
+[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.7ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20230425185050"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.5ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (2.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", "2023-04-27 14:38:37.711432"], ["updated_at", "2023-04-27 14:38:37.711432"]]
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT pg_advisory_unlock(4612965187933231080)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (3.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/" for ::1 at 2023-04-27 19:39:07 +0500
+  [1m[36mActiveRecord::SchemaMigration Pluck (2.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by WelcomesController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering welcomes/index.html.erb within layouts/application
+  Rendered welcomes/index.html.erb within layouts/application (Duration: 27.4ms | Allocations: 782)
+  Rendered layout layouts/application.html.erb (Duration: 1299.0ms | Allocations: 107475)
+Completed 200 OK in 1510ms (Views: 1386.9ms | ActiveRecord: 0.0ms | Allocations: 114470)
+
+
+Started GET "/users/sign_in" for ::1 at 2023-04-27 19:39:15 +0500
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 123.2ms | Allocations: 892)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 383.6ms | Allocations: 8737)
+  Rendered navbar/_index.html.erb (Duration: 29.4ms | Allocations: 260)
+  Rendered layout layouts/application.html.erb (Duration: 449.9ms | Allocations: 11879)
+Completed 200 OK in 538ms (Views: 472.5ms | ActiveRecord: 12.4ms | Allocations: 21777)
+
+
+Started GET "/users/sign_up" for ::1 at 2023-04-27 19:39:19 +0500
+Processing by Devise::RegistrationsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/registrations/new.html.erb within layouts/application
+  Rendered devise/shared/_error_messages.html.erb (Duration: 22.5ms | Allocations: 240)
+  Rendered devise/shared/_links.html.erb (Duration: 1.2ms | Allocations: 224)
+  Rendered devise/registrations/new.html.erb within layouts/application (Duration: 90.8ms | Allocations: 2557)
+  Rendered navbar/_index.html.erb (Duration: 0.4ms | Allocations: 55)
+  Rendered layout layouts/application.html.erb (Duration: 110.3ms | Allocations: 5437)
+Completed 200 OK in 131ms (Views: 123.4ms | ActiveRecord: 0.0ms | Allocations: 6653)
+
+
+Started POST "/users" for ::1 at 2023-04-27 19:39:45 +0500
+Processing by Devise::RegistrationsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "user"=>{"email"=>"foo@yopmail.com", "name"=>"foo", "password"=>"[FILTERED]", "password_confirmation"=>"[FILTERED]"}, "commit"=>"Sign up"}
+[31mUnpermitted parameter: :password_confirmation. Context: { controller: Devise::RegistrationsController, action: create, request: #<ActionDispatch::Request:0x00000227e0685ab0>, params: {"authenticity_token"=>"[FILTERED]", "user"=>{"email"=>"foo@yopmail.com", "name"=>"foo", "password"=>"[FILTERED]", "password_confirmation"=>"[FILTERED]"}, "commit"=>"Sign up", "controller"=>"devise/registrations", "action"=>"create"} }[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mUser Exists? (5.4ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "foo@yopmail.com"], ["LIMIT", 1]]
+  [1m[36mUser Create (2.0ms)[0m  [1m[32mINSERT INTO "users" ("name", "created_at", "updated_at", "email", "encrypted_password", "reset_password_token", "reset_password_sent_at", "remember_created_at", "confirmation_token", "confirmed_at", "confirmation_sent_at", "unconfirmed_email") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING "id"[0m  [["name", "foo"], ["created_at", "2023-04-27 14:39:46.438579"], ["updated_at", "2023-04-27 14:39:46.438579"], ["email", "foo@yopmail.com"], ["encrypted_password", "[FILTERED]"], ["reset_password_token", "[FILTERED]"], ["reset_password_sent_at", "[FILTERED]"], ["remember_created_at", nil], ["confirmation_token", "[FILTERED]"], ["confirmed_at", nil], ["confirmation_sent_at", "2023-04-27 14:39:46.438927"], ["unconfirmed_email", nil]]
+  [1m[36mTRANSACTION (4.9ms)[0m  [1m[35mCOMMIT[0m
+  Rendering devise/mailer/confirmation_instructions.html.erb
+  Rendered devise/mailer/confirmation_instructions.html.erb (Duration: 23.3ms | Allocations: 339)
+Devise::Mailer#confirmation_instructions: processed outbound mail in 106.3ms
+Delivered mail 644a8933322d1_4a243ae8-4e1@HassaanBaig.mail (10119.5ms)
+Date: Thu, 27 Apr 2023 19:39:47 +0500
+From: please-change-me-at-config-initializers-devise@example.com
+Reply-To: please-change-me-at-config-initializers-devise@example.com
+To: foo@yopmail.com
+Message-ID: <644a8933322d1_4a243ae8-4e1@HassaanBaig.mail>
+Subject: Confirmation instructions
+Mime-Version: 1.0
+Content-Type: text/html;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<p>Welcome foo@yopmail.com!</p>
+
+<p>You can confirm your account email through the link below:</p>
+
+<p><a href="http://localhost:3000/users/confirmation?confirmation_token=MHyW8Q-nS_xy4LJAZ--D">Confirm my account</a></p>
+
+Redirected to http://localhost:3000/
+Completed 303 See Other in 11552ms (ActiveRecord: 12.7ms | Allocations: 62593)
+
+
+Started GET "/" for ::1 at 2023-04-27 19:39:57 +0500
+Processing by WelcomesController#index as TURBO_STREAM
+  Rendering layout layouts/application.html.erb
+  Rendering welcomes/index.html.erb within layouts/application
+  Rendered welcomes/index.html.erb within layouts/application (Duration: 0.6ms | Allocations: 93)
+  Rendered layout layouts/application.html.erb (Duration: 26.7ms | Allocations: 3106)
+Completed 200 OK in 34ms (Views: 29.6ms | ActiveRecord: 0.0ms | Allocations: 3429)
+
+
+Started GET "/users/confirmation?confirmation_token=[FILTERED]" for ::1 at 2023-04-27 19:40:08 +0500
+Processing by Devise::ConfirmationsController#show as HTML
+  Parameters: {"confirmation_token"=>"[FILTERED]"}
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."confirmation_token" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["confirmation_token", "[FILTERED]"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mUser Update (2.6ms)[0m  [1m[33mUPDATE "users" SET "updated_at" = $1, "confirmed_at" = $2 WHERE "users"."id" = $3[0m  [["updated_at", "2023-04-27 14:40:09.197917"], ["confirmed_at", "2023-04-27 14:40:09.197148"], ["id", 1]]
+  [1m[36mTRANSACTION (0.6ms)[0m  [1m[35mCOMMIT[0m
+Redirected to http://localhost:3000/users/sign_in
+Completed 302 Found in 62ms (ActiveRecord: 4.8ms | Allocations: 6014)
+
+
+Started GET "/users/sign_in" for ::1 at 2023-04-27 19:40:09 +0500
+Processing by Devise::SessionsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering devise/sessions/new.html.erb within layouts/application
+  Rendered devise/shared/_links.html.erb (Duration: 0.4ms | Allocations: 219)
+  Rendered devise/sessions/new.html.erb within layouts/application (Duration: 5.7ms | Allocations: 1317)
+  Rendered navbar/_index.html.erb (Duration: 0.4ms | Allocations: 51)
+  Rendered layout layouts/application.html.erb (Duration: 604.7ms | Allocations: 4105)
+Completed 200 OK in 621ms (Views: 614.2ms | ActiveRecord: 0.0ms | Allocations: 4862)
+
+
+Started POST "/users/sign_in" for ::1 at 2023-04-27 19:40:16 +0500
+Processing by Devise::SessionsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "user"=>{"email"=>"foo@yopmail.com", "password"=>"[FILTERED]", "remember_me"=>"0"}, "commit"=>"Log in"}
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["email", "foo@yopmail.com"], ["LIMIT", 1]]
+Redirected to http://localhost:3000/groups
+Completed 303 See Other in 378ms (ActiveRecord: 0.6ms | Allocations: 2780)
+
+
+Started GET "/groups" for ::1 at 2023-04-27 19:40:17 +0500
+Processing by GroupsController#index as TURBO_STREAM
+  [1m[36mUser Load (1.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/groups_controller.rb:3:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/index.html.erb within layouts/application
+  [1m[36mGroup Load (2.2ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."user_id" = $1[0m  [["user_id", 1]]
+  ↳ app/views/groups/index.html.erb:5
+  Rendered groups/index.html.erb within layouts/application (Duration: 117.8ms | Allocations: 2421)
+  Rendered navbar/_index.html.erb (Duration: 0.4ms | Allocations: 84)
+  Rendered layout layouts/application.html.erb (Duration: 163.5ms | Allocations: 5414)
+Completed 200 OK in 303ms (Views: 175.3ms | ActiveRecord: 6.1ms | Allocations: 11374)
+
+
+Started GET "/groups/new" for ::1 at 2023-04-27 19:40:21 +0500
+Processing by GroupsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering groups/new.html.erb within layouts/application
+  Rendered groups/new.html.erb within layouts/application (Duration: 122.4ms | Allocations: 1387)
+  [1m[36mUser Load (1.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/navbar/_index.html.erb:3
+  Rendered navbar/_index.html.erb (Duration: 39.8ms | Allocations: 945)
+  Rendered layout layouts/application.html.erb (Duration: 215.2ms | Allocations: 5073)
+Completed 200 OK in 281ms (Views: 218.0ms | ActiveRecord: 5.5ms | Allocations: 11103)
+
+
+Started POST "/groups" for ::1 at 2023-04-27 19:40:30 +0500
+Processing by GroupsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "group"=>{"name"=>"KFC", "icon"=>"https://images.unsplash.com/photo-1629295607202-d13e19604c34?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=436&q=80"}, "commit"=>"Create Catagories"}
+  [1m[36mUser Load (0.8ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/groups_controller.rb:13:in `create'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/groups_controller.rb:14:in `create'
+  [1m[36mUser Load (0.9ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/groups_controller.rb:14:in `create'
+  [1m[36mGroup Create (4.7ms)[0m  [1m[32mINSERT INTO "groups" ("name", "icon", "user_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["name", "KFC"], ["icon", "https://images.unsplash.com/photo-1629295607202-d13e19604c34?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=436&q=80"], ["user_id", 1], ["created_at", "2023-04-27 14:40:31.045779"], ["updated_at", "2023-04-27 14:40:31.045779"]]
+  ↳ app/controllers/groups_controller.rb:14:in `create'
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/groups_controller.rb:14:in `create'
+Redirected to http://localhost:3000/groups
+Completed 302 Found in 75ms (ActiveRecord: 7.4ms | Allocations: 6966)
+
+
+Started GET "/groups" for ::1 at 2023-04-27 19:40:31 +0500
+Processing by GroupsController#index as TURBO_STREAM
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/groups_controller.rb:3:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/index.html.erb within layouts/application
+  [1m[36mGroup Load (1.0ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."user_id" = $1[0m  [["user_id", 1]]
+  ↳ app/views/groups/index.html.erb:5
+  [1m[36mHABTM_Payments Load (2.3ms)[0m  [1m[34mSELECT "groups_payments".* FROM "groups_payments" WHERE "groups_payments"."group_id" = $1[0m  [["group_id", 1]]
+  ↳ app/views/groups/index.html.erb:5
+  Rendered groups/index.html.erb within layouts/application (Duration: 142.0ms | Allocations: 11283)
+  Rendered navbar/_index.html.erb (Duration: 0.2ms | Allocations: 75)
+  Rendered layout layouts/application.html.erb (Duration: 161.6ms | Allocations: 14107)
+Completed 200 OK in 178ms (Views: 160.0ms | ActiveRecord: 6.4ms | Allocations: 15523)
+
+
+Started GET "/groups/1/payments" for ::1 at 2023-04-27 19:40:33 +0500
+Processing by PaymentsController#index as HTML
+  Parameters: {"group_id"=>"1"}
+  [1m[36mGroup Load (0.6ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/payments_controller.rb:3:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering payments/index.html.erb within layouts/application
+  [1m[36mPayment Load (3.8ms)[0m  [1m[34mSELECT "payments".* FROM "payments" INNER JOIN "groups_payments" ON "payments"."id" = "groups_payments"."payment_id" WHERE "groups_payments"."group_id" = $1[0m  [["group_id", 1]]
+  ↳ app/views/payments/index.html.erb:4
+  Rendered payments/index.html.erb within layouts/application (Duration: 68.2ms | Allocations: 5622)
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/navbar/_index.html.erb:3
+  Rendered navbar/_index.html.erb (Duration: 7.4ms | Allocations: 946)
+  Rendered layout layouts/application.html.erb (Duration: 101.7ms | Allocations: 9694)
+Completed 200 OK in 133ms (Views: 103.5ms | ActiveRecord: 12.9ms | Allocations: 11512)
+
+
+Started GET "/groups/1/payments/new" for ::1 at 2023-04-27 19:40:35 +0500
+Processing by PaymentsController#new as HTML
+  Parameters: {"group_id"=>"1"}
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/payments_controller.rb:9:in `new'
+  Rendering layout layouts/application.html.erb
+  Rendering payments/new.html.erb within layouts/application
+  [1m[36mGroup Load (0.6ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."user_id" = $1[0m  [["user_id", 1]]
+  ↳ app/views/payments/new.html.erb:10:in `collect'
+  Rendered payments/new.html.erb within layouts/application (Duration: 71.5ms | Allocations: 3612)
+  Rendered navbar/_index.html.erb (Duration: 0.2ms | Allocations: 75)
+  Rendered layout layouts/application.html.erb (Duration: 97.8ms | Allocations: 6429)
+Completed 200 OK in 136ms (Views: 103.5ms | ActiveRecord: 1.2ms | Allocations: 10419)
+
+
+Started POST "/groups/1/payments" for ::1 at 2023-04-27 19:40:44 +0500
+Processing by PaymentsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "payment"=>{"name"=>"Burger", "amount"=>"12", "group_id"=>"1"}, "commit"=>"Add Payment", "group_id"=>"1"}
+[31mUnpermitted parameter: :group_id. Context: { controller: PaymentsController, action: create, request: #<ActionDispatch::Request:0x00000227dd23e9c8>, params: {"authenticity_token"=>"[FILTERED]", "payment"=>{"name"=>"Burger", "amount"=>"12", "group_id"=>"1"}, "commit"=>"Add Payment", "controller"=>"payments", "action"=>"create", "group_id"=>"1"} }[0m
+  [1m[36mGroup Load (1.2ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/payments_controller.rb:14:in `create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/payments_controller.rb:16:in `create'
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/payments_controller.rb:16:in `create'
+  [1m[36mPayment Create (2.6ms)[0m  [1m[32mINSERT INTO "payments" ("name", "amount", "user_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["name", "Burger"], ["amount", 12], ["user_id", 1], ["created_at", "2023-04-27 14:40:44.871425"], ["updated_at", "2023-04-27 14:40:44.871425"]]
+  ↳ app/controllers/payments_controller.rb:16:in `create'
+  [1m[36mGroup::HABTM_Payments Create (2.9ms)[0m  [1m[32mINSERT INTO "groups_payments" ("group_id", "payment_id") VALUES ($1, $2)[0m  [["group_id", 1], ["payment_id", 1]]
+  ↳ app/controllers/payments_controller.rb:16:in `create'
+  [1m[36mTRANSACTION (3.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/payments_controller.rb:16:in `create'
+Redirected to http://localhost:3000/groups/1/payments
+Completed 302 Found in 74ms (ActiveRecord: 12.2ms | Allocations: 10400)
+
+
+Started GET "/groups/1/payments" for ::1 at 2023-04-27 19:40:44 +0500
+Processing by PaymentsController#index as TURBO_STREAM
+  Parameters: {"group_id"=>"1"}
+  [1m[36mGroup Load (0.6ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/payments_controller.rb:3:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering payments/index.html.erb within layouts/application
+  [1m[36mPayment Load (0.8ms)[0m  [1m[34mSELECT "payments".* FROM "payments" INNER JOIN "groups_payments" ON "payments"."id" = "groups_payments"."payment_id" WHERE "groups_payments"."group_id" = $1[0m  [["group_id", 1]]
+  ↳ app/views/payments/index.html.erb:4
+  Rendered payments/index.html.erb within layouts/application (Duration: 7.6ms | Allocations: 949)
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/navbar/_index.html.erb:3
+  Rendered navbar/_index.html.erb (Duration: 5.7ms | Allocations: 934)
+  Rendered layout layouts/application.html.erb (Duration: 33.5ms | Allocations: 4940)
+Completed 200 OK in 57ms (Views: 34.5ms | ActiveRecord: 1.8ms | Allocations: 5818)
+
+
+Started GET "/groups" for ::1 at 2023-04-27 19:40:50 +0500
+Processing by GroupsController#index as HTML
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = $1 ORDER BY "users"."id" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/groups_controller.rb:3:in `index'
+  Rendering layout layouts/application.html.erb
+  Rendering groups/index.html.erb within layouts/application
+  [1m[36mGroup Load (0.7ms)[0m  [1m[34mSELECT "groups".* FROM "groups" WHERE "groups"."user_id" = $1[0m  [["user_id", 1]]
+  ↳ app/views/groups/index.html.erb:5
+  [1m[36mHABTM_Payments Load (0.6ms)[0m  [1m[34mSELECT "groups_payments".* FROM "groups_payments" WHERE "groups_payments"."group_id" = $1[0m  [["group_id", 1]]
+  ↳ app/views/groups/index.html.erb:5
+  [1m[36mPayment Load (0.5ms)[0m  [1m[34mSELECT "payments".* FROM "payments" WHERE "payments"."id" = $1[0m  [["id", 1]]
+  ↳ app/views/groups/index.html.erb:5
+  Rendered groups/index.html.erb within layouts/application (Duration: 21.3ms | Allocations: 2869)
+  Rendered navbar/_index.html.erb (Duration: 0.3ms | Allocations: 75)
+  Rendered layout layouts/application.html.erb (Duration: 42.7ms | Allocations: 5706)
+Completed 200 OK in 57ms (Views: 44.0ms | ActiveRecord: 2.3ms | Allocations: 7122)
+
+
